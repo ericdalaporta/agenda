@@ -37,6 +37,17 @@
                                         <td> {{ agendamento.horario }} </td>
                                         <td> {{ agendamento.cliente }} </td>
                                         <td> {{ agendamento.funcionario }} </td>
+                                        <td>
+                                            {% for servico in agendamento.ordem_servicos_agendamento.all %}
+                                                {% if forloop.last %}
+                                                    {{ servico }} ({{ servico.det_situacao_display }})
+                                                {% else %}
+                                                    {{ servico }} ({{ servico.get_situacao_display }}),
+                                                {% endif %}
+                                                {% empty %}
+                                                    Nenhum serviço agendado
+                                                {% endfor %}
+                                        </td>
                                         
                                         <td style="text-align: center">
                                                 <a href="{% url 'agendamento_editar' agendamento.pk %}">

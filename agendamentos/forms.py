@@ -19,3 +19,7 @@ class AgendamentoModelForm(forms.ModelForm):
             'cliente': {'required': 'O cliente é um campo obrigatorio'}
             'funcionario': {'required': 'O funcionário é um campo obrigatório'}
         }
+
+AgendamentoServicoInLine = inlineformset_factory(Agendamento, OrdemServicos,
+                                                 fields=('servico', 'situacao', 'observacoes'),
+                                                 extra=1, can_delete=True)
