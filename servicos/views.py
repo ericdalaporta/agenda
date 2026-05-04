@@ -1,7 +1,15 @@
-from django.shortcuts import render
+from django.contrib import messages
+from django.contrib.messages import SUCCESS
+from django.contrib.messages.views import SuccessMessageMixin
+from django.core.paginator import Paginator
+from django.db import transaction
+from django.db.models import Q
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from .forms import ServicoModelForm, ProdutosServicoInLine
+from .models import Servico
 
-from servicos.models import Servico
-
+# Create your views here.
 
 class ServicosView(ListView):
     model = Servico
@@ -10,23 +18,22 @@ class ServicosView(ListView):
     def get_queryset(self):
         buscar = self.request.GET.get('buscar')
         qs = super(ServicosView, self).get_queryset()
-
         if buscar:
-            qs = qs.filter(Q(nome__icontains=buscar) |Q(descricao__icontains=buscar))
+            qs = qs.filter(Q(nome__icontains=buscar)|Q(descricao__icontains=buscar))
 
-        if qs.count()>0:
-            paginator = Paginator(qs, 1)
+        if qs.count() > 0:
+            paginator = Paginator(qs, 20)
             listagem = paginator.get_page(self.request.GET.get('page'))
             return listagem
         else:
-            return messages.info(self.request, 'Não existem serviços cadastrados!')
+            return messages.info(self.request, 'Não existem servicos cadastrados!')
 
 class ServicoAddView(SuccessMessageMixin, CreateView):
     model = Servico
     form_class = ServicoModelForm
     template_name = 'servico_form.html'
     success_url = reverse_lazy('servicos')
-    success_message = 'Serviço cadastrado com sucesso!'
+    success_message = 'Serviços cadastrado com sucesso'
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -44,16 +51,17 @@ class ServicoAddView(SuccessMessageMixin, CreateView):
                 self.object = form.save()
                 frm_inline.instance = self.object
                 frm_inline.save()
-                return super().form_valid(form)
+                return super().form_Valid(form)
             else:
                 return self.render_to_response(self.get_context_data(form=form))
+
 
 class ServicoUpdateView(SuccessMessageMixin, UpdateView):
     model = Servico
     form_class = ServicoModelForm
     template_name = 'servico_form.html'
     success_url = reverse_lazy('servicos')
-    success_message = 'Serviço alterado com sucesso!'
+    success_message = 'Serviço alterado com sucesso'
 
     def get_queryset(self):
         return super().get_queryset().prefetch_related('produtos_servico_servico')
@@ -61,12 +69,12 @@ class ServicoUpdateView(SuccessMessageMixin, UpdateView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         if self.request.POST:
-            data['frm_inline'] = ProdutosServicoInLine(self.request.POST, instance = self.object)
+            data['frm_inline'] = ProdutosServicoInLine(self.request.POST, instance=self.object)
         else:
             data['frm_inline'] = ProdutosServicoInLine(instance=self.object)
         return data
 
-    def form_valid(selfself, form):
+    def form_valid(self, form):
         context = self.get_context_data()
         frm_inline = context['frm_inline']
         with transaction.atomic():
@@ -76,10 +84,10 @@ class ServicoUpdateView(SuccessMessageMixin, UpdateView):
                 frm_inline.save()
                 return super().form_valid(form)
             else:
-                return self.render_to_responde(self.get_context_data(form=form))
+                return self.render_to_response(self.get_context_data(form=form))
 
 class ServicoDeleteView(SuccessMessageMixin, DeleteView):
     model = Servico
     template_name = 'servico_apagar.html'
     success_url = reverse_lazy('servicos')
-    success_message = 'servico apagado com sucesso!'
+    sucess_message = 'Serviço apagado com sucesso'

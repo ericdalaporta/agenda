@@ -1,12 +1,14 @@
-from django.core.management.base import BaseCommand
+import random
+
+from django.core.management import BaseCommand
 from django_seed import Seed
 from faker import Faker
 
 from servicos.models import Servico
-import random
+
 
 class Command(BaseCommand):
-    help = 'Seed customizado para gerar dados específicos para serviços'
+    help = 'Seed customizado para gerar dados especificos para serviços'
 
     def handle(self, *args, **kwargs):
         lista_servicos = []
@@ -14,10 +16,11 @@ class Command(BaseCommand):
             lista_servicos.append(f'Serviço {i}')
         seeder = Seed.seeder()
         fake = Faker('pt_BR')
-        seeder.add.entity(Servico, 50, {
+        seeder.add_entity(Servico, 50, {
             'nome': lambda x: random.choice(lista_servicos),
             'preco': lambda x: random.uniform(0.01, 100.00),
             'descricao': lambda x: fake.paragraph(nb_sentences=3),
+
         })
 
         inserted_pks = seeder.execute()

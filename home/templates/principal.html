@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 {% load static %}
-{% load django_bootstrap5 %}
+{%  load django_bootstrap5 %}
 <html lang="pt-br" data-bs-theme="light">
-    {% block head %}
-        {% include "head.html" %}
-    {% endblock %}
+{% block head %}
+    {% include "head.html" %}
+{% endblock %}
     <body>
         <section class="section bg-success p-2 bg-opacity-75">
             <div class="container">
                 <nav class="navbar navbar-expand-lg" data-bs-theme="dark">
-                    <a class="navbar-brand" href="{%  url 'index' %}">
+                    <a class="navbar-brand" href="{% url 'index' %}">
                         <img src="{% static 'img/Carro.png' %}" width="221" height="115">
                     </a>
 					<div class="container-fluid">
-						<a class="navbar-brand" href="#">{% url  'index' %}</a>
+						<a class="navbar-brand" href="{% url 'index' %}">Início</a>
 						<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
 							data-bs-target="#navbarSupportedContent"
 							aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -28,7 +28,7 @@
 										Clientes
 									</a>
 									<ul class="dropdown-menu">
-										<li><a class="dropdown-item" href="{% url 'cliente_add' %}">Cadastrar Cliente</a></li>
+										<li><a class="dropdown-item" href="{% url 'cliente_adicionar' %}">Cadastrar Cliente</a></li>
 										<li><a class="dropdown-item" href="{% url 'clientes' %}">Listar Clientes</a></li>
 									</ul>
 								</li>
@@ -39,7 +39,7 @@
 									</a>
 									<ul class="dropdown-menu">
 										<li><a class="dropdown-item" href="{% url 'fornecedor_adicionar' %}">Cadastrar Fornecedor</a></li>
-										<li><a class="dropdown-item" href="{%  url 'fornecedores' %}">Listar Fornecedores</a></li>
+										<li><a class="dropdown-item" href="{% url 'fornecedores' %}">Listar Fornecedores</a></li>
 									</ul>
 								</li>
                                 <li class="nav-item dropdown">
@@ -90,16 +90,13 @@
         </section>
 
         {% if messages %}
-            <div class="conteiner-fluid p-3">
+            <div class="container-fluid p-3">
                 {% bootstrap_messages %}
             </div>
         {% endif %}
-
     {% block content %} {% endblock %}
-
     {% block footer %}
         {% include "footer.html" %}
     {% endblock %}
-
     </body>
 </html>

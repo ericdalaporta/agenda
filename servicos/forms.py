@@ -8,12 +8,10 @@ class ServicoModelForm(forms.ModelForm):
         model = Servico
         fields = ['nome', 'descricao', 'preco']
 
-    error_messages = {
-        'nome':{'required': 'O nome do serviço é um campo obrigatório', 'unique': 'Serviço já cadastrado'},
-        'descricao': {'required': 'A descrição do serviço é um campo obrigatório'},
-        'preco': {'required': 'O preço do serviço é um campo obrigatório'},
-    }
+        error_messages = {
+            'nome': {'required': 'O nome do fornecedor é um campo obrigatório'},
+            'preco': {'required': 'O CNPJ do fornecedor é um campo obrigatório', 'unique': 'CNPJ já cadastrado'},
+            'descricao': {'required': 'O número do telefone é um campo obrigatório'},
+        }
 
-ProdutosServicoInLine = inLineformset_factory(Servico, ProdutoServico,
-                                              firlds=('produto', 'quantidade'),
-                                              extra=1, can_delete=True,)
+ProdutosServicoInLine = inlineformset_factory(Servico, ProdutosServico, fields=('produto', 'quantidade'), extra=1, can_delete=True,)

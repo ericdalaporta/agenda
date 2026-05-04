@@ -1,8 +1,8 @@
-{% extends 'principal.html' %}
+{%  extends 'principal.html' %}
 {% load django_bootstrap5 %}
 {% load static %}
 {% block content %}
-<section class="section">
+    <section class="section">
         <div class="container">
             <form action="" method="GET">
                 <div class="form-group row p-3">
@@ -18,8 +18,7 @@
                     </div>
                 </div>
             </form>
-            {% if object_list %}
-            
+                {% if object_list %}
                 <div class="card-body">
                     <h3 class="text-center">Serviços Cadastrados</h3>
                     <div class="table-responsive">
@@ -32,21 +31,21 @@
                                 <th style="width: 100px; text-align: center">Ações</th>
                             </thead>
                             <tbody>
-                               {%  for servico in object_list %}
+                                    {% for servico in object_list %}
                                     <tr>
-                                        <td> {{ servico.nome }} </td>
-                                        <td> {{ servico.descricao }} </td>
-                                        <td> {{ servico.preco }} </td>
+                                        <td>{{ servico.nome }}</td>
+                                        <td>{{ servico.descricao }}</td>
+                                        <td>{{ servico.preco }}</td>
                                         <td>
                                             {% for produto in servico.produtos.all %}
                                                 {% if forloop.last %}
-                                                {{ produto }}
+                                                    {{ produto }}
                                                 {% else %}
-                                                {{ produto }}
+                                                    {{ produto }}
                                                 {% endif %}
-                                                {% empty %}
-                                                Nenhum produto registrado para este serviço
-                                                {% endfor %}
+                                            {% empty %}
+                                                Nenhum produto registrado para este serviço.
+                                            {% endfor %}
                                         </td>
                                         
                                         <td style="text-align: center">
@@ -63,14 +62,15 @@
                                             </a>
                                         </td>
                                     </tr>
-                                {% endfor %}
+                                    {% endfor %}
                             </tbody>
                         </table>
                     </div>
-                    
+                    <div class="d-flex justify-content-center">
+                        {% bootstrap_pagination object_list url="/servicos?page=1" size="sm" %}
+                    </div>
                 </div>
-            <div class="d-flex justify-content-center">
-                {% bootstrap_pagination object_list url="/servicos?page=1" size="sm" %}
-            </div>
+                {% endif %}
         </div>
     </section>
+{% endblock %}

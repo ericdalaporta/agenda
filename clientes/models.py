@@ -1,13 +1,14 @@
 from django.db import models
-from django.db.models.functions import Upper
+from stdimage import StdImageField
 
-from stdimage.models import StdImageField
+
+# Create your models here.
 
 class Pessoa(models.Model):
     nome = models.CharField('Nome', max_length=50, help_text='Nome completo')
-    fone = models.CharField('Fone', max_length=20, blank=True, help_text='Telefone de contato')
-    email = models.EmailField('E-mail', blank=True, help_text='Endereço de e-mail')
-    foto = StdImageField('Foto', upload_to='Foto', blank=True, null=True, help_text='Foto do cliente')
+    fone = models.CharField('Telefone', max_length=15, help_text='Número do telefone')
+    email = models.CharField('E-mail', max_length=100, help_text='Endereço de e-mail', unique=True)
+    foto = StdImageField('Foto', upload_to='pessoas', delete_orphans=True, null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -16,11 +17,11 @@ class Pessoa(models.Model):
         return self.nome
 
 class Cliente(Pessoa):
-    endereco = models.CharField('Endereço', max_length=100, blank=True, help_text='Endereço Completo')
+    endereco = models.CharField('Endereço', max_length=100, help_text='Endereço completo')
 
     class Meta:
         verbose_name = 'Cliente'
         verbose_name_plural = 'Clientes'
 
     def __str__(self):
-        return self.nome
+        return super().nome
