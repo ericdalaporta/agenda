@@ -28,10 +28,10 @@
                                     {% for hidden in campo.hidden_fields %}
                                         {{ hidden }}
                                     {% endfor %}
-                                    <td>{% bootstrap_field campo.servico show.label=False %}</td>
-                                    <td>{% bootstrap_field campo.funcionario show.label=False %}</td>
-                                    <td>{% bootstrap_field campo.situacao show.label=False %}</td>
-                                    <td>{% bootstrap_field campo.observacoes show.label=False %}</td>
+                                    <td>{% bootstrap_field campo.servico show_label=False %}</td>
+                                    <td>{% bootstrap_field campo.funcionario show_label=False %}</td>
+                                    <td>{% bootstrap_field campo.situacao show_label=False %}</td>
+                                    <td>{% bootstrap_field campo.observacoes show_label=False %}</td>
                                     <td class="text-center text-danger">
                                         {% if campo.instance.pk %}
                                             {{ campo.DELETE }}

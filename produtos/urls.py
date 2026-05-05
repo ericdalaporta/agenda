@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import ProdutosView, ProdutoAddView, ProdutoUpdateView, \
+from produtos.views import ProdutosView, ProdutoAddView, ProdutoUpdateView, \
     ProdutoDeleteView
 
 urlpatterns = [
