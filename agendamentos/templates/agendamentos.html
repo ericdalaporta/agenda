@@ -1,13 +1,13 @@
 {% extends 'principal.html' %}
 {% load django_bootstrap5 %}
 {% load static %}
-{% load content %}
+{% block content %}
     <section class="section">
         <div class="container">
             <form action="" method="GET">
                 <div class="form-group row p-3">
                     <div class="col-sm-5">
-                        {% boostrap_field form.cliente layout='horizontal' %}
+                        {% bootstrap_field form.cliente layout='horizontal' %}
                     </div>
                     <div class="col-sm-5">
                         {% bootstrap_field form.funcionario layout='horizontal' %}
@@ -34,38 +34,49 @@
                             <tbody>
                                 {% for agendamento in object_list %}
                                     <tr>
-                                        <td> {{ agendamento.horario }} </td>
-                                        <td> {{ agendamento.cliente }} </td>
-                                        <td> {{ agendamento.funcionario }} </td>
+                                        <td>{{ agendamento.horario }}</td>
+                                        <td>{{ agendamento.cliente }}</td>
+                                        <td>{{ agendamento.funcionario }}</td>
                                         <td>
                                             {% for servico in agendamento.ordem_servicos_agendamento.all %}
-                                                {% if forloop.last %}
-                                                    {{ servico }} ({{ servico.det_situacao_display }})
-                                                {% else %}
-                                                    {{ servico }} ({{ servico.get_situacao_display }}),
-                                                {% endif %}
-                                                {% empty %}
-                                                    Nenhum serviço agendado
-                                                {% endfor %}
+                                                {{ servico }} - R$ {{ servico.preco }} ({{ servico.get_situacao_display }})<br>
+                                            {% endfor %}
+                                            <strong>Valor total: {{ agendamento.valor }}</strong>
                                         </td>
-                                        
                                         <td style="text-align: center">
-                                                <a href="{% url 'agendamento_editar' agendamento.pk %}">
+                                            {% if agendamento.status == 'A' %}
+                                                <a class="text-decoration-none" href="{% url 'agendamento_editar' agendamento.pk %}">
                                                     <span class="icon">
                                                         <i class="fas fa-edit"></i>
                                                     </span>
                                                 </a>
-                                                <a href="{% url 'agendamento_apagar' agendamento.pk %}">
+                                                <a class="text-decoration-none" href="{% url 'agendamento_apagar' agendamento.pk %}">
                                                     <span class="icon">
-                                                        <i class="far fa-trash-alt"></i>
+                                                        <i class="fas fa-trash"></i>
                                                     </span>
                                                 </a>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                                            {% else %}
+                                                <span class="icon">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </span>
+                                                <span class="icon">
+                                                    <i class="fas fa-edit"></i>
+                                                </span>
+                                                <span class="icon">
+                                                    <i class="far fa-trash-alt"></i>
+                                                </span>
+                                            {% endif %}
+                                            <a class="text-decoration-none" href="{% url 'agendamento_exibir' agendamento.pk %}">
+                                                <span class="icon">
+                                                    <i class="fas fa-check-circle"></i>
+                                                </span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                     <div class="d-flex justify-content-center">
                         {% bootstrap_pagination object_list url="/agendamentos?page=1" size="sm" %}
                     </div>

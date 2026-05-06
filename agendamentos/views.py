@@ -4,11 +4,14 @@ from django.core.paginator import Paginator
 from django.db import transaction
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
+    DetailView
 
+from produtos.models import Produto
+from servicos.models import ProdutosServico
 from .forms import AgendamentoListForm, AgendamentoModelForm, \
     AgendamentosServicoInLine
-from .models import Agendamento
+from .models import Agendamento, OrdemServicos
 
 
 class AgendamentosView(ListView):
@@ -69,6 +72,8 @@ class AgendamentoAddView(SuccessMessageMixin, CreateView):
             else:
                 return self.render_to_response(self.get_context_data(form=form))
 
+
+
 class AgendamentoUpdateView(SuccessMessageMixin, UpdateView):
     model = Agendamento
     form_class = AgendamentoModelForm
@@ -90,6 +95,20 @@ class AgendamentoUpdateView(SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         context = self.get_context_data()
         frm_inline = context['frm_inline']
+        if frm_inline.is_valid():
+            for form_item in frm_inline:
+                if not form_item.cleaned_data or form_item.cleaned_data.get('DELETE'):
+                    continue
+                situacao = form_item.cleaned_data.get('situacao')
+                servico = form_item.cleaned_data.get('servico')
+                if situacao != 'C':
+                    produtoservico = ProdutosServico.objects.filter(servico=servico)
+                    if produtoservico:
+                        for prd in produtoservico:
+                            produto = prd.produto
+                            if produto.quantidade < prd.quantidade:
+                                messages.error(self.request, f'Atenção! Quantidade em estoque insuficiente para o produto {produto.nome}')
+                                return self.render_to_response(self.get_context_data(form=form))
         with transaction.atomic():
             if frm_inline.is_valid():
                 self.object = form.save()
@@ -104,3 +123,27 @@ class AgendamentoDeleteView(SuccessMessageMixin, DeleteView):
     template_name = 'agendamento_apagar.html'
     success_url = reverse_lazy('agendamentos')
     success_message = 'Agendamento apagado com sucesso'
+
+class AgendamentoExibir(DetailView):
+    model = Agendamento
+    template_name = 'agendamento_exibir.html'
+
+    def get_object(self, queryset=None):
+        agendamento = Agendamento.objects.get(pk=self.kwargs.get('pk'))
+        if agendamento.status == 'A':
+            ordem_servico = OrdemServicos.objects.filter(agendamento=agendamento)
+            lista_situacao = ordem_servico.values_list('situacao', flat=True)
+            if 'A' in lista_situacao:
+                messages.info(self.request, 'Ordem de serviço não pode ser encerrada. Existem serviços com a situação em aberto!')
+            else:
+                for ordem in ordem_servico:
+                    if ordem.situacao == 'R':
+                        if ordem.servico.produto:
+                            produto_servico = ProdutosServico.objects.filter(servico=ordem.servico)
+                            for item in produto_servico:
+                                produto = Produto.objects.get(pk=item.produto.pk)
+                                produto.quantidade -= item.quantidade
+                                produto.save()
+                agendamento.status = 'F'
+                agendamento.save()
+        return agendamento

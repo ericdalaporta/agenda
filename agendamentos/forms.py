@@ -1,5 +1,6 @@
 from django import forms
 from django.forms import inlineformset_factory
+from tempus_dominus.widgets import DatePicker
 
 from agendamentos.models import Agendamento, OrdemServicos
 from clientes.models import Cliente
@@ -15,7 +16,10 @@ class AgendamentoModelForm(forms.ModelForm):
         model = Agendamento
         fields = ['horario', 'cliente', 'funcionario']
         widgets = {
-            'horario': forms.DateTimeInput(attrs={'type': 'datetime-local' ,'class': 'form-control'}),
+            'horario': forms.DateTimeInput(
+                format='%Y-%m-%dT%H:%M',
+                attrs={'type': 'datetime-local' ,'class': 'form-control'}
+            ),
         }
 
         error_messages = {

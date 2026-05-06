@@ -1,7 +1,8 @@
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator
-from django.shortcuts import render
+from django.db.models import ProtectedError
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
@@ -47,3 +48,12 @@ class FuncionarioDeleteView(SuccessMessageMixin, DeleteView):
     template_name = 'funcionario_apagar.html'
     success_url = reverse_lazy('funcionarios')
     success_message = 'Funcionário excluído com sucesso!'
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        try:
+            return super().post(request, *args, **kwargs)
+        except ProtectedError:
+            messages.error(request, f'O funcionário {self.object} não pode ser excluído. Esse funcionario está registrado em agendamentos.')
+        return redirect(success_url)
