@@ -12,6 +12,7 @@ class Agendamento(models.Model):
     status = models.CharField('Status', max_length=1, help_text='Status do agendamento', default='A')
 
     class Meta:
+        permissions = (('fechar_agendamento', 'Permite fechar o agendamento'),)
         verbose_name = 'Agendamento'
         verbose_name_plural = 'Agendamentos'
         ordering = ['-horario']

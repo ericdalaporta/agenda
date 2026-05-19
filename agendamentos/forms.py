@@ -1,6 +1,5 @@
 from django import forms
 from django.forms import inlineformset_factory
-from tempus_dominus.widgets import DatePicker
 
 from agendamentos.models import Agendamento, OrdemServicos
 from clientes.models import Cliente

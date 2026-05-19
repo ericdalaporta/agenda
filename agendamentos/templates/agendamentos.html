@@ -66,11 +66,13 @@
                                                     <i class="far fa-trash-alt"></i>
                                                 </span>
                                             {% endif %}
+                                            {% if perms.agendamentos.fechar_agendamento %}
                                             <a class="text-decoration-none" href="{% url 'agendamento_exibir' agendamento.pk %}">
                                                 <span class="icon">
                                                     <i class="fas fa-check-circle"></i>
                                                 </span>
                                             </a>
+                                            {% endif %}
                                         </td>
                                     </tr>
                             {% endfor %}

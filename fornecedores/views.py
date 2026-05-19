@@ -8,12 +8,16 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from .forms import FornecedorModelForm
 from .models import Fornecedor
+from django.views.generic.base import TemplateResponseMixin, View
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 # Create your views here.
 
-class FornecedoresView(ListView):
+class FornecedoresView(PermissionRequiredMixin, ListView):
     model = Fornecedor
     template_name = 'fornecedores.html'
+    permission_required = 'fornecedores.view_fornecedor'
+    permission_denied_message = 'Visualizar fornecedores'
 
     def get_queryset(self):
         buscar = self.request.GET.get('buscar')
@@ -28,21 +32,27 @@ class FornecedoresView(ListView):
         else:
             return messages.info(self.request, 'Não existem fornecedores cadastrados!')
 
-class FornecedorAddView(SuccessMessageMixin, CreateView):
+class FornecedorAddView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
+    permission_required = 'fornecedores.add_fornecedor'
+    permission_denied_message = 'Cadastrar fornecedor'
     model = Fornecedor
     form_class = FornecedorModelForm
     template_name = 'fornecedor_form.html'
     success_url = reverse_lazy('fornecedores')
     success_message = 'Fornecedor cadastrado com sucesso'
 
-class FornecedorUpdateView(SuccessMessageMixin, UpdateView):
+class FornecedorUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
+    permission_required = 'fornecedores.change_fornecedor'
+    permission_denied_message = 'Editar fornecedor'
     model = Fornecedor
     form_class = FornecedorModelForm
     template_name = 'fornecedor_form.html'
     success_url = reverse_lazy('fornecedores')
     success_message = 'Fornecedor alterado com sucesso'
 
-class FornecedorDeleteView(SuccessMessageMixin, DeleteView):
+class FornecedorDeleteView(PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
+    permission_required = 'fornecedores.delete_fornecedor'
+    permission_denied_message = 'Excluir fornecedor'
     model = Fornecedor
     template_name = 'fornecedor_apagar.html'
     success_url = reverse_lazy('fornecedores')

@@ -9,12 +9,16 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from .forms import ServicoModelForm, ProdutosServicoInLine
 from .models import Servico
+from django.views.generic.base import TemplateResponseMixin, View
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 # Create your views here.
 
-class ServicosView(ListView):
+class ServicosView(PermissionRequiredMixin, ListView):
     model = Servico
     template_name = 'servicos.html'
+    permission_required = 'servicos.view_servico'
+    permission_denied_message = 'Visualizar serviços'
 
     def get_queryset(self):
         buscar = self.request.GET.get('buscar')
@@ -29,7 +33,9 @@ class ServicosView(ListView):
         else:
             return messages.info(self.request, 'Não existem servicos cadastrados!')
 
-class ServicoAddView(SuccessMessageMixin, CreateView):
+class ServicoAddView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
+    permission_required = 'servicos.add_servico'
+    permission_denied_message = 'Cadastrar serviço'
     model = Servico
     form_class = ServicoModelForm
     template_name = 'servico_form.html'
@@ -52,12 +58,14 @@ class ServicoAddView(SuccessMessageMixin, CreateView):
                 self.object = form.save()
                 frm_inline.instance = self.object
                 frm_inline.save()
-                return super().form_Valid(form)
+                return super().form_valid(form)
             else:
                 return self.render_to_response(self.get_context_data(form=form))
 
 
-class ServicoUpdateView(SuccessMessageMixin, UpdateView):
+class ServicoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
+    permission_required = 'servicos.change_servico'
+    permission_denied_message = 'Editar serviço'
     model = Servico
     form_class = ServicoModelForm
     template_name = 'servico_form.html'
@@ -87,7 +95,9 @@ class ServicoUpdateView(SuccessMessageMixin, UpdateView):
             else:
                 return self.render_to_response(self.get_context_data(form=form))
 
-class ServicoDeleteView(SuccessMessageMixin, DeleteView):
+class ServicoDeleteView(PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
+    permission_required = 'servicos.delete_servico'
+    permission_denied_message = 'Excluir serviço'
     model = Servico
     template_name = 'servico_apagar.html'
     success_url = reverse_lazy('servicos')
