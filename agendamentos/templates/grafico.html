@@ -1,0 +1,66 @@
+{% extends 'principal.html' %}
+{% load django_bootstrap5 %}
+{%  load static %}
+{% load i18n %}
+{% block content %}
+    <section class="section">
+        <div class="container">
+            {% if object_list %}
+                <div class="card-body">
+                    <h3 class="text-center">
+                        Agendamentos Cadastrados
+                    </h3>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-success">
+                                    <th>Horário</th>
+                                    <th>Valor</th>
+                                </thead>
+                                <tbody>
+                                    {% for agendamento in object_list %}
+                                        <tr>
+                                            <td>{{ agendamento.horario }}</td>
+                                            <td>{{ agendamento.valor }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                <div class="col-6">
+                    {% language 'en' %}
+                    <canvas id="Grafico" width="800" height="400"></canvas>
+                    <scrip src="https://cdn.jsdelivr.net/npm/chart.js"></scrip>
+                    <script>
+                        const ctx = document.getElementById('Grafico').getContext('2d');
+                        const myChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: [{% for item in object_list.values %}{{ item.horario }}, {% endfor %}],
+                                datasets: [{
+                                    label: "Curva dos valores recebidos",
+                                    data: [{% for item in object_list.values %}"{{ item.valor }}", {% endfor %}],
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 2,
+                                    pointRadius: 0,
+                                    fill: false,
+                                    tension: 0, 4
+                                }]
+                            },
+                        otions: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                        });
+                    </script>
+                    {% endlanguage %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    </section>
+{% endblock %}
