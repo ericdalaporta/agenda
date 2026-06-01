@@ -14,6 +14,6 @@ class ServicoAdmin(admin.ModelAdmin):
     search_fields = ('nome', 'descricao')
 
     def get_produtos(self, obj):
-        return ', '. join([prd.nome for prd in Produto.objects.filter(servico=obj.id)])
+        return ', '.join([prd.nome for prd in Produto.objects.filter(servico_produtos=obj.id)])
 
     get_produtos.short_description = 'Produtos utilizados'

@@ -5,7 +5,7 @@ from .models import Cliente
 
 @admin.register(Cliente)
 class ClienteAdmin(admin.ModelAdmin):
-    fieldsets = ('nome', 'endereco', 'fone', 'email', 'foto', 'fotografia')
+    fields = ('nome', 'endereco', 'fone', 'email', 'foto', 'fotografia')
     list_display = ('nome', 'endereco', 'email')
     readonly_fields = ['fotografia']
     search_fields = ('nome', 'fone')

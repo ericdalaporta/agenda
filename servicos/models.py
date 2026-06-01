@@ -7,7 +7,7 @@ class Servico(models.Model):
     nome = models.CharField("Nome", max_length=100, help_text="Nome do serviço", unique=True)
     preco = models.DecimalField("Preço",max_digits=5, decimal_places=2, help_text="Preço do serviço")
     descricao = models.CharField("Descrição do serviço", max_length=300, help_text="Descrição do serviço")
-    produtos = models.ManyToManyField('produtos.Produto',through='servicos.ProdutosServico', related_name='servicos_produtos')
+    produtos = models.ManyToManyField('produtos.Produto',through='servicos.ProdutosServico', related_name='servico_produtos')
 
     class Meta:
         verbose_name = "Serviço"
