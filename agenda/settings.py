@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import cloudinary
+import dj_database_url
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-INSTALLED_APPS += ['django_bootstrap5', 'django_seed', 'django_extensions']
+INSTALLED_APPS += ['django_bootstrap5', 'cloudinary']
 
 INSTALLED_APPS += ['home', 'fornecedores', 'clientes', 'funcionarios', 'produtos', 'servicos', 'agendamentos']
 
@@ -76,10 +79,7 @@ WSGI_APPLICATION = 'agenda.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default' : dj_database_url.parse("postgresql://agenda_mjc3_user:fo6tXQJagdbtkB49XxaOLFHa4r1JeS3j@dpg-d8f1kvd9j78s73fn11d0-a.oregon-postgres.render.com/agenda_mjc3")
 }
 
 
@@ -118,6 +118,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+cloudinary.config(
+    cloud_name = "detxvfgly",
+    api_key = "815729694374846",
+    api_secret = "Pn_1TitMdYhbarL8JkFmhKZCjN0",
+    secure=True
+)
 
 MEDIA_URL = '/media/'
 
@@ -125,7 +131,7 @@ STATICFILES_DIRS = [BASE_DIR / 'static',]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = ''
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
